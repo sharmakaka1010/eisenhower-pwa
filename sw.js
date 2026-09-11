@@ -3,7 +3,7 @@
    Offline caching, lifecycle management, and notification click router
    =================================================================== */
 
-const CACHE_NAME = 'eisenhower-matrix-v1.0';
+const CACHE_NAME = 'eisenhower-matrix-v1.1';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -39,20 +39,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: Stale-While-Revalidate with network fallback & offline resiliency
+// Fetch: NETWORK-FIRST Strategy
+// This guarantees users always see the latest code from GitHub on reload,
+// preventing the need to manually clear site data (which deletes localStorage).
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
-
   const url = new URL(event.request.url);
-
-  // Exclude chrome-extension or other non-http(s) protocols
   if (!url.protocol.startsWith('http')) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      // Stale-While-Revalidate: fetch in background to update cache
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If the network request is successful, clone the response
+        // and put it in the cache, then return the network response.
         if (networkResponse && networkResponse.status === 200) {
           const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -60,18 +59,20 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch((err) => {
-        // Network failed (offline)
-        // If navigating to a page, fallback to cached index.html
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-        throw err;
-      });
-
-      // Return cached version immediately if available, otherwise wait for network
-      return cachedResponse || fetchPromise;
-    })
+      })
+      .catch((err) => {
+        // If the network request fails (e.g., offline), fallback to the cache.
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // If navigating to a page and offline, fallback to cached index.html
+          if (event.request.mode === 'navigate') {
+            return caches.match('./index.html');
+          }
+          throw err;
+        });
+      })
   );
 });
 
