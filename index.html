@@ -1140,10 +1140,16 @@
       .mobile-tab-bar {
         display: flex;
       }
-      .matrix-grid.filter-q1 .quadrant-box:not([data-quadrant="q1"]) { display: none; }
-      .matrix-grid.filter-q2 .quadrant-box:not([data-quadrant="q2"]) { display: none; }
-      .matrix-grid.filter-q3 .quadrant-box:not([data-quadrant="q3"]) { display: none; }
-      .matrix-grid.filter-q4 .quadrant-box:not([data-quadrant="q4"]) { display: none; }
+      .app-main.filter-q1 .quadrant-box:not([data-quadrant="q1"]) { display: none; }
+      .app-main.filter-q2 .quadrant-box:not([data-quadrant="q2"]) { display: none; }
+      .app-main.filter-q3 .quadrant-box:not([data-quadrant="q3"]) { display: none; }
+      .app-main.filter-q4 .quadrant-box:not([data-quadrant="q4"]) { display: none; }
+
+      .app-main.filter-q1 .timetable-section { display: none; }
+      .app-main.filter-q2 .timetable-section { display: none; }
+      .app-main.filter-q3 .timetable-section { display: none; }
+      .app-main.filter-q4 .timetable-section { display: none; }
+
     }
 
     @media (max-width: 540px) {
@@ -1164,6 +1170,196 @@
         align-items: flex-start;
       }
     }
+  
+    /* ===================================================================
+       TIMETABLE & VIEW SWITCHER STYLES
+       =================================================================== */
+    .view-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .view-btn {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .view-btn.active {
+      background: var(--border-accent);
+      color: #fff;
+      border-color: var(--border-accent);
+    }
+    .content-wrapper {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      flex: 1;
+      width: 100%;
+    }
+    .matrix-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .timetable-section {
+      width: 340px;
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+    /* Layout Modes */
+    .app-main.mode-combined .timetable-section { display: flex; }
+    .app-main.mode-timetable .matrix-section { display: none; }
+    .app-main.mode-timetable .timetable-section { display: flex; width: 100%; flex-direction: row; }
+    .app-main.mode-timetable .routine-column { flex: 1; }
+
+    .routine-column {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-height: 280px;
+      max-height: 50vh;
+    }
+    .app-main.mode-timetable .routine-column { max-height: 75vh; }
+    .routine-header {
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .routine-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .routine-title.personal { color: #10b981; }
+    .routine-title.professional { color: #8b5cf6; }
+    .routine-progress {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .routine-add-bar {
+      padding: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 6px;
+      background: var(--bg-card);
+    }
+    .routine-time-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 4px;
+      font-size: 0.8rem;
+      color-scheme: dark;
+    }
+    [data-theme="light"] .routine-time-input { color-scheme: light; }
+    .routine-text-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      min-width: 0;
+    }
+    .btn-add-routine {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+    .btn-add-routine:hover { background: var(--border-subtle); }
+    .routine-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .routine-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+    }
+    .routine-item.completed {
+      opacity: 0.6;
+      background: rgba(0,0,0,0.05);
+    }
+    .routine-item.completed .routine-item-title {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+    .time-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--bg-input);
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .routine-item-title {
+      flex: 1;
+      font-size: 0.85rem;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    @media (max-width: 1024px) {
+      .app-main.mode-combined .timetable-section {
+        width: 260px;
+      }
+      .app-main.mode-timetable .timetable-section {
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 860px) {
+      .view-controls { display: none; }
+      .content-wrapper { display: block; }
+      .matrix-section { display: flex; }
+      .timetable-section { display: none; width: 100%; margin-top: 16px; }
+      /* Mobile Tab overrides */
+      .app-main.filter-personal .matrix-section { display: none; }
+      .app-main.filter-personal .timetable-section { display: flex; }
+      .app-main.filter-personal .routine-column.professional { display: none; }
+      
+      .app-main.filter-professional .matrix-section { display: none; }
+      .app-main.filter-professional .timetable-section { display: flex; }
+      .app-main.filter-professional .routine-column.personal { display: none; }
+      
+      .app-main.filter-all-time .matrix-section { display: none; }
+      .app-main.filter-all-time .timetable-section { display: flex; }
+    }
+    
   </style>
 </head>
 <body>
@@ -1236,7 +1432,7 @@
   <!-- ===================================================================
        MAIN VIEWPORT
        =================================================================== -->
-  <main class="app-main">
+  <main class="app-main mode-combined" id="appMain">
 
     <!-- iOS Install Hint Banner (shown only on iOS Safari non-standalone) -->
     <div id="iosInstallBanner" class="ios-install-banner">
@@ -1297,6 +1493,14 @@
       </div>
     </section>
 
+    
+    <!-- Desktop View Switcher -->
+    <div class="view-controls" id="desktopViewControls">
+      <button class="view-btn active" data-view-mode="combined">Combined View</button>
+      <button class="view-btn" data-view-mode="matrix">Matrix Only</button>
+      <button class="view-btn" data-view-mode="timetable">Timetable Only</button>
+    </div>
+    
     <!-- Mobile Segmented Tab Bar (Visible on mobile/narrow screens) -->
     <div class="mobile-tab-bar" id="mobileTabBar">
       <button class="matrix-tab-btn active" data-view="all">All (2x2 Matrix)</button>
@@ -1304,10 +1508,15 @@
       <button class="matrix-tab-btn" data-view="q2">Q2 Schedule</button>
       <button class="matrix-tab-btn" data-view="q3">Q3 Delegate</button>
       <button class="matrix-tab-btn" data-view="q4">Q4 Eliminate</button>
+      <button class="matrix-tab-btn" data-view="personal">🌿 Personal</button>
+      <button class="matrix-tab-btn" data-view="professional">💼 Work</button>
+    
     </div>
 
-    <!-- Eisenhower 2x2 Matrix Grid -->
-    <section class="matrix-grid" id="matrixGrid">
+    <div class="content-wrapper" id="contentWrapper">
+      <div class="matrix-section">
+        <!-- Eisenhower 2x2 Matrix Grid -->
+        <section class="matrix-grid" id="matrixGrid">
 
       <!-- QUADRANT 1: URGENT & IMPORTANT (DO FIRST) -->
       <article class="quadrant-box" data-quadrant="q1" id="box-q1">
@@ -1390,6 +1599,41 @@
       </article>
 
     </section>
+
+      </div> <!-- End matrix-section -->
+      
+      <!-- Timetable Section -->
+      <section class="timetable-section" id="timetableSection">
+        <!-- Personal Routine -->
+        <div class="routine-column personal">
+          <header class="routine-header">
+            <div class="routine-title personal">🌿 Personal Routine</div>
+            <div class="routine-progress" id="progress-personal">0/0</div>
+          </header>
+          <div class="routine-add-bar">
+            <input type="time" class="routine-time-input" id="time-personal" value="07:00">
+            <input type="text" class="routine-text-input" id="input-personal" placeholder="New habit..." autocomplete="off">
+            <button class="btn-add-routine" data-type="personal">+</button>
+          </div>
+          <div class="routine-list" id="list-personal"></div>
+        </div>
+        
+        <!-- Professional Routine -->
+        <div class="routine-column professional">
+          <header class="routine-header">
+            <div class="routine-title professional">💼 Professional Routine</div>
+            <div class="routine-progress" id="progress-professional">0/0</div>
+          </header>
+          <div class="routine-add-bar">
+            <input type="time" class="routine-time-input" id="time-professional" value="09:00">
+            <input type="text" class="routine-text-input" id="input-professional" placeholder="New task..." autocomplete="off">
+            <button class="btn-add-routine" data-type="professional">+</button>
+          </div>
+          <div class="routine-list" id="list-professional"></div>
+        </div>
+      </section>
+    </div> <!-- End content-wrapper -->
+    
   </main>
 
   <!-- ===================================================================
@@ -1668,6 +1912,19 @@
       }
     ];
 
+    
+    const STORAGE_KEY_ROUTINES = 'eisenhower_routines_v1';
+    let routines = [];
+    
+    const SAMPLE_ROUTINES = [
+      { id: 'r1', type: 'personal', time: '06:30', title: 'Morning Workout & Stretch', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r2', type: 'personal', time: '07:30', title: 'Healthy Breakfast', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r3', type: 'personal', time: '21:00', title: 'Read 20 pages', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r4', type: 'professional', time: '09:00', title: 'Inbox Zero & Daily Triage', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r5', type: 'professional', time: '10:00', title: 'Deep Work Sprint (90m)', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r6', type: 'professional', time: '17:00', title: 'EOD Wrap-up & Plan Tomorrow', isCompleted: false, lastCompletedDate: '' }
+    ];
+    
     let tasks = [];
     let settings = { ...DEFAULT_SETTINGS };
     let selectedQuadrant = 'q1';
@@ -1682,15 +1939,51 @@
     function initApp() {
       loadSettings();
       loadTasks();
+      loadRoutines();
       initTheme();
       initPWA();
       setupEventListeners();
       renderMatrix();
+      renderRoutines();
       startReminderEngine();
       updateNotificationStatusUI();
     }
 
     /* Load tasks from localStorage */
+    
+    function getTodayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function loadRoutines() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_ROUTINES);
+        if (stored) {
+          routines = JSON.parse(stored);
+        } else {
+          routines = [...SAMPLE_ROUTINES];
+          saveRoutines();
+        }
+        // Daily reset logic
+        const today = getTodayStr();
+        let needsSave = false;
+        routines.forEach(r => {
+          if (r.isCompleted && r.lastCompletedDate !== today) {
+            r.isCompleted = false;
+            needsSave = true;
+          }
+        });
+        if (needsSave) saveRoutines();
+      } catch(e) {
+        routines = [...SAMPLE_ROUTINES];
+      }
+    }
+    
+    function saveRoutines() {
+      localStorage.setItem(STORAGE_KEY_ROUTINES, JSON.stringify(routines));
+    }
+    
     function loadTasks() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY_TASKS);
@@ -2045,6 +2338,87 @@
     /* ===================================================================
        6. MATRIX RENDERING & TASK ACTIONS
        =================================================================== */
+    
+    function formatTime12(time24) {
+      if(!time24) return '';
+      const [h, m] = time24.split(':');
+      const hours = parseInt(h, 10);
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const h12 = hours % 12 || 12;
+      return `${h12}:${m} ${ampm}`;
+    }
+
+    function renderRoutines() {
+      ['personal', 'professional'].forEach(type => {
+        const listEl = document.getElementById(`list-${type}`);
+        const progressEl = document.getElementById(`progress-${type}`);
+        listEl.innerHTML = '';
+        
+        const typeRoutines = routines.filter(r => r.type === type);
+        typeRoutines.sort((a,b) => a.time.localeCompare(b.time));
+        
+        const total = typeRoutines.length;
+        const done = typeRoutines.filter(r => r.isCompleted).length;
+        const pct = total === 0 ? 0 : Math.round((done/total)*100);
+        progressEl.textContent = `${done}/${total} · ${pct}%`;
+        
+        typeRoutines.forEach(r => {
+          const item = document.createElement('div');
+          item.className = `routine-item ${r.isCompleted ? 'completed' : ''}`;
+          item.innerHTML = `
+            <div class="task-checkbox-wrap" style="width:16px;height:16px;">
+              <div class="task-checkbox" style="width:16px;height:16px;border-radius:4px;">
+                <svg class="check-svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+            </div>
+            <div class="time-badge">${formatTime12(r.time)}</div>
+            <div class="routine-item-title">${escapeHtml(r.title)}</div>
+            <button class="btn-task-action btn-task-delete" style="width:20px;height:20px;" title="Delete routine">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          `;
+          
+          item.querySelector('.task-checkbox-wrap').addEventListener('click', () => {
+            r.isCompleted = !r.isCompleted;
+            r.lastCompletedDate = r.isCompleted ? getTodayStr() : '';
+            saveRoutines();
+            triggerTapHaptic();
+            renderRoutines();
+          });
+          
+          item.querySelector('.btn-task-delete').addEventListener('click', () => {
+            routines = routines.filter(x => x.id !== r.id);
+            saveRoutines();
+            renderRoutines();
+          });
+          
+          listEl.appendChild(item);
+        });
+      });
+    }
+    
+    function handleAddRoutine(type) {
+      const timeInp = document.getElementById(`time-${type}`);
+      const textInp = document.getElementById(`input-${type}`);
+      const title = textInp.value.trim();
+      if(!title) return;
+      
+      routines.push({
+        id: 'r_' + Date.now(),
+        type: type,
+        time: timeInp.value || '12:00',
+        title: title,
+        isCompleted: false,
+        lastCompletedDate: ''
+      });
+      saveRoutines();
+      textInp.value = '';
+      triggerTapHaptic();
+      renderRoutines();
+    }
+    
     function renderMatrix() {
       const quadrants = ['q1', 'q2', 'q3', 'q4'];
 
@@ -2240,6 +2614,7 @@
       saveTasks();
       triggerTapHaptic();
       renderMatrix();
+      renderRoutines();
     }
 
     function moveTaskQuadrant(taskId, newQuadrant) {
@@ -2249,6 +2624,7 @@
       saveTasks();
       triggerTapHaptic();
       renderMatrix();
+      renderRoutines();
       showToast(`Shifted to ${newQuadrant.toUpperCase()}`);
     }
 
@@ -2260,12 +2636,22 @@
       saveTasks();
       triggerTapHaptic();
       renderMatrix();
+      renderRoutines();
 
       showToast('Task deleted', 4500, 'Undo', () => {
         if (lastDeletedTask) {
           tasks.splice(lastDeletedTask.index, 0, lastDeletedTask.task);
           saveTasks();
           renderMatrix();
+
+          const existingRIds = new Set(routines.map(r => r.id));
+          importedRoutines.forEach(r => {
+            if(!existingRIds.has(r.id)) routines.push(r);
+          });
+          saveRoutines();
+          renderRoutines();
+    
+      renderRoutines();
           lastDeletedTask = null;
           showToast('Task restored');
         }
@@ -2295,6 +2681,15 @@
           task.title = newTitle;
           saveTasks();
           renderMatrix();
+
+          const existingRIds = new Set(routines.map(r => r.id));
+          importedRoutines.forEach(r => {
+            if(!existingRIds.has(r.id)) routines.push(r);
+          });
+          saveRoutines();
+          renderRoutines();
+    
+      renderRoutines();
         } else {
           titleElement.textContent = task.title;
         }
@@ -2363,6 +2758,7 @@
       input.focus();
 
       renderMatrix();
+      renderRoutines();
       showToast(`Added to ${newTask.quadrant.toUpperCase()}`);
     }
 
@@ -2407,6 +2803,7 @@
         version: '1.0',
         exportedAt: new Date().toISOString(),
         tasks: tasks,
+        routines: routines,
         settings: settings
       };
 
@@ -2429,6 +2826,7 @@
         try {
           const parsed = JSON.parse(e.target.result);
           const importedTasks = Array.isArray(parsed) ? parsed : (parsed.tasks || []);
+          const importedRoutines = parsed.routines || [];
 
           if (!Array.isArray(importedTasks) || importedTasks.length === 0) {
             showToast('⚠️ No valid tasks found in JSON file.');
@@ -2458,6 +2856,15 @@
 
           saveTasks();
           renderMatrix();
+
+          const existingRIds = new Set(routines.map(r => r.id));
+          importedRoutines.forEach(r => {
+            if(!existingRIds.has(r.id)) routines.push(r);
+          });
+          saveRoutines();
+          renderRoutines();
+    
+      renderRoutines();
           closeAllModals();
           showToast(`✅ Imported ${addedCount} tasks successfully.`);
         } catch (err) {
@@ -2477,14 +2884,19 @@
       tasks = tasks.filter(t => !t.isCompleted);
       saveTasks();
       renderMatrix();
+      renderRoutines();
       closeAllModals();
       showToast(`🧹 Cleared ${completedCount} completed tasks.`);
     }
 
     function seedSampleData() {
       tasks = [...SAMPLE_TASKS];
+      routines = [...SAMPLE_ROUTINES];
       saveTasks();
+      saveRoutines();
       renderMatrix();
+      renderRoutines();
+      renderRoutines();
       closeAllModals();
       showToast('✨ Sample Eisenhower Matrix loaded.');
     }
@@ -2492,8 +2904,12 @@
     function resetAllData() {
       if (confirm('Are you sure you want to delete all tasks and reset FocusMatrix? This cannot be undone.')) {
         tasks = [];
+        routines = [];
         saveTasks();
+        saveRoutines();
         renderMatrix();
+        renderRoutines();
+      renderRoutines();
         closeAllModals();
         showToast('Reset complete: all tasks removed.');
       }
@@ -2510,6 +2926,28 @@
         }
       });
 
+      
+      document.querySelectorAll('.btn-add-routine').forEach(btn => {
+        btn.addEventListener('click', () => handleAddRoutine(btn.dataset.type));
+      });
+      ['personal', 'professional'].forEach(t => {
+        const inp = document.getElementById(`input-${t}`);
+        if(inp) inp.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter') handleAddRoutine(t);
+        });
+      });
+      
+      // Desktop View Controls
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const mode = btn.dataset.viewMode;
+          const main = document.getElementById('appMain');
+          main.className = `app-main mode-${mode}`;
+        });
+      });
+    
       // Quick Capture Input: Enter to add
       const taskInput = document.getElementById('taskTitleInput');
       taskInput.addEventListener('keydown', (e) => {
@@ -2617,8 +3055,8 @@
           document.querySelectorAll('.matrix-tab-btn').forEach(b => b.classList.remove('active'));
           tabBtn.classList.add('active');
           const view = tabBtn.dataset.view;
-          const grid = document.getElementById('matrixGrid');
-          grid.className = 'matrix-grid' + (view !== 'all' ? ` filter-${view}` : '');
+          const main = document.getElementById('appMain');
+          main.className = 'app-main mode-combined' + (view !== 'all' ? ` filter-${view}` : '');
         });
       });
 
