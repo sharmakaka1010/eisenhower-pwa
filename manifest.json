@@ -1,0 +1,46 @@
+{
+  "name": "Eisenhower Matrix: Focus & Triage",
+  "short_name": "FocusMatrix",
+  "description": "Standalone Eisenhower 4-Quadrant Task Matrix with persistent local storage, hourly recurrence alerts, and mobile vibration feedback.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090d16",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": [
+    "productivity",
+    "utilities",
+    "business"
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Task",
+      "short_name": "Add",
+      "description": "Directly open the quick task capture form",
+      "url": "./index.html#quick-add",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Do First (Q1)",
+      "short_name": "Q1",
+      "description": "View Urgent & Important tasks",
+      "url": "./index.html#q1",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ]
+}
