@@ -1936,7 +1936,25 @@
     /* ===================================================================
        2. INITIALIZATION
        =================================================================== */
+    
+    const APP_LAST_MODIFIED = '2026-09-11T13:09:49Z';
+
+    function checkAndAutoBackup() {
+      const storedModified = localStorage.getItem('eisenhower_last_modified');
+      // If it exists and is different from current, an update occurred!
+      if (storedModified && storedModified !== APP_LAST_MODIFIED) {
+        showToast('🔄 Code update detected! Auto-saving backup just in case...', 5000);
+        // Delay slightly to let the UI render before triggering download
+        setTimeout(() => {
+          exportTasksJson();
+        }, 1500);
+      }
+      // Always update the stored version to the current one
+      localStorage.setItem('eisenhower_last_modified', APP_LAST_MODIFIED);
+    }
+
     function initApp() {
+      checkAndAutoBackup();
       loadSettings();
       loadTasks();
       loadRoutines();
