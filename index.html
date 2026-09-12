@@ -1927,8 +1927,7 @@
         quadrant: 'q1',
         timeCreated: Date.now() - 3600000 * 2,
         dueDate: new Date(Date.now() + 3600000 * 3).toISOString().slice(0, 16),
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_2',
@@ -1936,8 +1935,7 @@
         quadrant: 'q1',
         timeCreated: Date.now() - 3600000 * 4,
         dueDate: new Date(Date.now() + 3600000 * 5).toISOString().slice(0, 16),
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_3',
@@ -1945,8 +1943,7 @@
         quadrant: 'q2',
         timeCreated: Date.now() - 3600000 * 24,
         dueDate: new Date(Date.now() + 3600000 * 48).toISOString().slice(0, 16),
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_4',
@@ -1954,8 +1951,7 @@
         quadrant: 'q2',
         timeCreated: Date.now() - 3600000 * 12,
         dueDate: '',
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_5',
@@ -1963,8 +1959,7 @@
         quadrant: 'q3',
         timeCreated: Date.now() - 3600000 * 6,
         dueDate: '',
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_6',
@@ -1972,8 +1967,7 @@
         quadrant: 'q3',
         timeCreated: Date.now() - 3600000 * 18,
         dueDate: '',
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       },
       {
         id: 'sample_7',
@@ -1989,8 +1983,7 @@
         quadrant: 'q4',
         timeCreated: Date.now() - 3600000 * 40,
         dueDate: '',
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       }
     ];
 
@@ -2004,18 +1997,12 @@
     let routines = [];
     
     const SAMPLE_ROUTINES = [
-      { id: 'r1', type: 'personal', time: '06:30', title: 'Morning Workout & Stretch', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' },
-      { id: 'r2', type: 'personal', time: '07:30', title: 'Healthy Breakfast', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' },
-      { id: 'r3', type: 'personal', time: '21:00', title: 'Read 20 pages', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' },
-      { id: 'r4', type: 'professional', time: '09:00', title: 'Inbox Zero & Daily Triage', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' },
-      { id: 'r5', type: 'professional', time: '10:00', title: 'Deep Work Sprint (90m)', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' },
-      { id: 'r6', type: 'professional', time: '17:00', title: 'EOD Wrap-up & Plan Tomorrow', isCompleted: false,
-        workspace: activeWorkspace, lastCompletedDate: '' }
+      { id: 'r1', type: 'personal', time: '06:30', title: 'Morning Workout & Stretch', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r2', type: 'personal', time: '07:30', title: 'Healthy Breakfast', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r3', type: 'personal', time: '21:00', title: 'Read 20 pages', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r4', type: 'professional', time: '09:00', title: 'Inbox Zero & Daily Triage', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r5', type: 'professional', time: '10:00', title: 'Deep Work Sprint (90m)', isCompleted: false, lastCompletedDate: '' },
+      { id: 'r6', type: 'professional', time: '17:00', title: 'EOD Wrap-up & Plan Tomorrow', isCompleted: false, lastCompletedDate: '' }
     ];
     
     let tasks = [];
@@ -2030,7 +2017,7 @@
        2. INITIALIZATION
        =================================================================== */
     
-    const APP_LAST_MODIFIED = '2026-09-12T12:27:44Z';
+    const APP_LAST_MODIFIED = '2026-09-12T14:06:59Z';
 
     function checkAndAutoBackup() {
       const storedModified = localStorage.getItem('eisenhower_last_modified');
@@ -2531,7 +2518,6 @@
         time: timeInp.value || '12:00',
         title: title,
         isCompleted: false,
-        workspace: activeWorkspace,
         lastCompletedDate: ''
       });
       saveRoutines();
@@ -2976,8 +2962,7 @@
         quadrant: quadrantOverride || selectedQuadrant,
         timeCreated: Date.now(),
         dueDate: dueInput.value || '',
-        isCompleted: false,
-        workspace: activeWorkspace
+        isCompleted: false
       };
 
       tasks.unshift(newTask);
