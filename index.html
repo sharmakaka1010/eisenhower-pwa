@@ -1360,9 +1360,62 @@
       .app-main.filter-all-time .timetable-section { display: flex; }
     }
     
+  
+    /* ===================================================================
+       WORKSPACE SWITCHER & SHOPPING LIST
+       =================================================================== */
+    .workspace-switcher {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      margin-bottom: 12px;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .ws-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: transparent;
+      transition: all 0.2s ease;
+    }
+    .ws-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .ws-btn[data-ws="personal"].active { border-bottom: 3px solid #10b981; }
+    .ws-btn[data-ws="professional"].active { border-bottom: 3px solid #3b82f6; }
+    
+    .routine-title.shopping { color: #f43f5e; }
+    
+    /* Workspace Filtering Logic */
+    body[data-workspace="personal"] .routine-column.professional { display: none !important; }
+    body[data-workspace="professional"] .routine-column.personal { display: none !important; }
+    body[data-workspace="professional"] .routine-column.shopping { display: none !important; }
+    
+    /* Mobile Tab adjustments based on workspace */
+    body[data-workspace="professional"] .matrix-tab-btn[data-view="personal"] { display: none !important; }
+    body[data-workspace="professional"] .matrix-tab-btn[data-view="shopping"] { display: none !important; }
+    body[data-workspace="personal"] .matrix-tab-btn[data-view="professional"] { display: none !important; }
+    
+    /* Mobile Tab filtering logic overrides for Shopping */
+    .app-main.filter-shopping .matrix-section { display: none !important; }
+    .app-main.filter-shopping .timetable-section { display: flex !important; }
+    .app-main.filter-shopping .routine-column:not(.shopping) { display: none !important; }
+    
   </style>
 </head>
-<body>
+<body data-workspace="professional">
 
   <!-- ===================================================================
        APP HEADER
@@ -1434,6 +1487,13 @@
        =================================================================== -->
   <main class="app-main mode-combined" id="appMain">
 
+    
+    <!-- Global Workspace Switcher -->
+    <div class="workspace-switcher" id="workspaceSwitcher">
+      <button class="ws-btn" data-ws="personal">🌿 Personal Space</button>
+      <button class="ws-btn active" data-ws="professional">💼 Professional Space</button>
+    </div>
+    
     <!-- iOS Install Hint Banner (shown only on iOS Safari non-standalone) -->
     <div id="iosInstallBanner" class="ios-install-banner">
       <div style="font-size: 0.84rem; display: flex; align-items: center; gap: 8px;">
@@ -1510,6 +1570,7 @@
       <button class="matrix-tab-btn" data-view="q4">Q4 Eliminate</button>
       <button class="matrix-tab-btn" data-view="personal">🌿 Personal</button>
       <button class="matrix-tab-btn" data-view="professional">💼 Work</button>
+      <button class="matrix-tab-btn" data-view="shopping">🛒 Shopping</button>
     
     </div>
 
@@ -1632,6 +1693,20 @@
           <div class="routine-list" id="list-professional"></div>
         </div>
       </section>
+    
+        <!-- Shopping List -->
+        <div class="routine-column shopping">
+          <header class="routine-header">
+            <div class="routine-title shopping">🛒 Shopping List</div>
+            <div class="routine-progress" id="progress-shopping">0/0</div>
+          </header>
+          <div class="routine-add-bar">
+            <input type="text" class="routine-text-input" id="input-shopping" placeholder="Add item..." autocomplete="off">
+            <button class="btn-add-routine" id="btnAddShopping" data-type="shopping">+</button>
+          </div>
+          <div class="routine-list" id="list-shopping"></div>
+        </div>
+    
     </div> <!-- End content-wrapper -->
     
   </main>
@@ -1852,7 +1927,8 @@
         quadrant: 'q1',
         timeCreated: Date.now() - 3600000 * 2,
         dueDate: new Date(Date.now() + 3600000 * 3).toISOString().slice(0, 16),
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_2',
@@ -1860,7 +1936,8 @@
         quadrant: 'q1',
         timeCreated: Date.now() - 3600000 * 4,
         dueDate: new Date(Date.now() + 3600000 * 5).toISOString().slice(0, 16),
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_3',
@@ -1868,7 +1945,8 @@
         quadrant: 'q2',
         timeCreated: Date.now() - 3600000 * 24,
         dueDate: new Date(Date.now() + 3600000 * 48).toISOString().slice(0, 16),
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_4',
@@ -1876,7 +1954,8 @@
         quadrant: 'q2',
         timeCreated: Date.now() - 3600000 * 12,
         dueDate: '',
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_5',
@@ -1884,7 +1963,8 @@
         quadrant: 'q3',
         timeCreated: Date.now() - 3600000 * 6,
         dueDate: '',
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_6',
@@ -1892,7 +1972,8 @@
         quadrant: 'q3',
         timeCreated: Date.now() - 3600000 * 18,
         dueDate: '',
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       },
       {
         id: 'sample_7',
@@ -1908,21 +1989,33 @@
         quadrant: 'q4',
         timeCreated: Date.now() - 3600000 * 40,
         dueDate: '',
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       }
     ];
 
     
     const STORAGE_KEY_ROUTINES = 'eisenhower_routines_v1';
+    
+    const STORAGE_KEY_SHOPPING = 'eisenhower_shopping_v1';
+    let shoppingList = [];
+    let activeWorkspace = 'professional'; // 'personal' or 'professional'
+    
     let routines = [];
     
     const SAMPLE_ROUTINES = [
-      { id: 'r1', type: 'personal', time: '06:30', title: 'Morning Workout & Stretch', isCompleted: false, lastCompletedDate: '' },
-      { id: 'r2', type: 'personal', time: '07:30', title: 'Healthy Breakfast', isCompleted: false, lastCompletedDate: '' },
-      { id: 'r3', type: 'personal', time: '21:00', title: 'Read 20 pages', isCompleted: false, lastCompletedDate: '' },
-      { id: 'r4', type: 'professional', time: '09:00', title: 'Inbox Zero & Daily Triage', isCompleted: false, lastCompletedDate: '' },
-      { id: 'r5', type: 'professional', time: '10:00', title: 'Deep Work Sprint (90m)', isCompleted: false, lastCompletedDate: '' },
-      { id: 'r6', type: 'professional', time: '17:00', title: 'EOD Wrap-up & Plan Tomorrow', isCompleted: false, lastCompletedDate: '' }
+      { id: 'r1', type: 'personal', time: '06:30', title: 'Morning Workout & Stretch', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' },
+      { id: 'r2', type: 'personal', time: '07:30', title: 'Healthy Breakfast', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' },
+      { id: 'r3', type: 'personal', time: '21:00', title: 'Read 20 pages', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' },
+      { id: 'r4', type: 'professional', time: '09:00', title: 'Inbox Zero & Daily Triage', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' },
+      { id: 'r5', type: 'professional', time: '10:00', title: 'Deep Work Sprint (90m)', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' },
+      { id: 'r6', type: 'professional', time: '17:00', title: 'EOD Wrap-up & Plan Tomorrow', isCompleted: false,
+        workspace: activeWorkspace, lastCompletedDate: '' }
     ];
     
     let tasks = [];
@@ -1937,7 +2030,7 @@
        2. INITIALIZATION
        =================================================================== */
     
-    const APP_LAST_MODIFIED = '2026-09-11T13:09:49Z';
+    const APP_LAST_MODIFIED = '2026-09-12T12:27:44Z';
 
     function checkAndAutoBackup() {
       const storedModified = localStorage.getItem('eisenhower_last_modified');
@@ -1958,11 +2051,13 @@
       loadSettings();
       loadTasks();
       loadRoutines();
+      loadShoppingList();
       initTheme();
       initPWA();
       setupEventListeners();
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
       startReminderEngine();
       updateNotificationStatusUI();
     }
@@ -1981,6 +2076,7 @@
           routines = JSON.parse(stored);
         } else {
           routines = [...SAMPLE_ROUTINES];
+      shoppingList = [];
           saveRoutines();
         }
         // Daily reset logic
@@ -1995,6 +2091,7 @@
         if (needsSave) saveRoutines();
       } catch(e) {
         routines = [...SAMPLE_ROUTINES];
+      shoppingList = [];
       }
     }
     
@@ -2005,9 +2102,12 @@
     function loadTasks() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY_TASKS);
+        
         if (stored) {
           tasks = JSON.parse(stored);
+          tasks.forEach(t => { if(!t.workspace) t.workspace = 'professional'; });
         } else {
+    
           tasks = [...SAMPLE_TASKS];
           saveTasks();
         }
@@ -2404,12 +2504,14 @@
             saveRoutines();
             triggerTapHaptic();
             renderRoutines();
+      renderShoppingList();
           });
           
           item.querySelector('.btn-task-delete').addEventListener('click', () => {
             routines = routines.filter(x => x.id !== r.id);
             saveRoutines();
             renderRoutines();
+      renderShoppingList();
           });
           
           listEl.appendChild(item);
@@ -2429,12 +2531,80 @@
         time: timeInp.value || '12:00',
         title: title,
         isCompleted: false,
+        workspace: activeWorkspace,
         lastCompletedDate: ''
       });
       saveRoutines();
       textInp.value = '';
       triggerTapHaptic();
       renderRoutines();
+      renderShoppingList();
+    }
+    
+    
+    function loadShoppingList() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_SHOPPING);
+        if (stored) {
+          shoppingList = JSON.parse(stored);
+        }
+      } catch(e) { shoppingList = []; }
+    }
+    
+    function saveShoppingList() {
+      localStorage.setItem(STORAGE_KEY_SHOPPING, JSON.stringify(shoppingList));
+    }
+    
+    function renderShoppingList() {
+      const listEl = document.getElementById('list-shopping');
+      const progressEl = document.getElementById('progress-shopping');
+      listEl.innerHTML = '';
+      
+      const total = shoppingList.length;
+      const done = shoppingList.filter(s => s.isCompleted).length;
+      progressEl.textContent = `${done}/${total}`;
+      
+      shoppingList.forEach(s => {
+        const item = document.createElement('div');
+        item.className = `routine-item ${s.isCompleted ? 'completed' : ''}`;
+        item.innerHTML = `
+          <div class="task-checkbox-wrap" style="width:16px;height:16px;">
+            <div class="task-checkbox" style="width:16px;height:16px;border-radius:4px;">
+              <svg class="check-svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+          <div class="routine-item-title">${escapeHtml(s.title)}</div>
+          <button class="btn-task-action btn-task-delete" style="width:20px;height:20px;" title="Delete item">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        `;
+        
+        item.querySelector('.task-checkbox-wrap').addEventListener('click', () => {
+          s.isCompleted = !s.isCompleted;
+          saveShoppingList();
+          triggerTapHaptic();
+          renderShoppingList();
+        });
+        
+        item.querySelector('.btn-task-delete').addEventListener('click', () => {
+          shoppingList = shoppingList.filter(x => x.id !== s.id);
+          saveShoppingList();
+          renderShoppingList();
+        });
+        
+        listEl.appendChild(item);
+      });
+    }
+    
+    function handleAddShoppingItem() {
+      const textInp = document.getElementById('input-shopping');
+      const title = textInp.value.trim();
+      if(!title) return;
+      shoppingList.push({ id: 's_' + Date.now(), title: title, isCompleted: false });
+      saveShoppingList();
+      textInp.value = '';
+      triggerTapHaptic();
+      renderShoppingList();
     }
     
     function renderMatrix() {
@@ -2444,7 +2614,8 @@
         const listEl = document.getElementById(`list-${q}`);
         const countEl = document.getElementById(`count-${q}`);
         
-        const qTasks = tasks.filter(t => t.quadrant === q);
+        const workspaceTasks = tasks.filter(t => t.workspace === activeWorkspace);
+        const qTasks = workspaceTasks.filter(t => t.quadrant === q);
         const activeCount = qTasks.filter(t => !t.isCompleted).length;
         countEl.textContent = activeCount;
 
@@ -2544,6 +2715,9 @@
               <button class="shift-option" data-move-to="q2"><span style="color: var(--q2-color);">●</span> Move to Q2 (Schedule)</button>
               <button class="shift-option" data-move-to="q3"><span style="color: var(--q3-color);">●</span> Move to Q3 (Delegate)</button>
               <button class="shift-option" data-move-to="q4"><span style="color: var(--q4-color);">●</span> Move to Q4 (Eliminate)</button>
+              <hr style="border:0; border-top:1px solid var(--border-subtle); margin:4px 0;">
+              <button class="shift-option" data-move-ws="true">🔄 Send to other Space</button>
+    
             </div>
           </div>
 
@@ -2602,6 +2776,22 @@
         });
       });
 
+      
+        // Shift to other workspace
+        const btnMoveWs = item.querySelector('[data-move-ws="true"]');
+        if (btnMoveWs) {
+          btnMoveWs.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const newWs = task.workspace === 'personal' ? 'professional' : 'personal';
+            task.workspace = newWs;
+            saveTasks();
+            triggerTapHaptic();
+            renderMatrix();
+            showToast(`Moved to ${newWs.toUpperCase()} space`);
+            shiftDropdown.classList.remove('open');
+          });
+        }
+    
       // Event: Delete Task
       item.querySelector('.btn-task-delete').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2633,6 +2823,7 @@
       triggerTapHaptic();
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
     }
 
     function moveTaskQuadrant(taskId, newQuadrant) {
@@ -2643,6 +2834,7 @@
       triggerTapHaptic();
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
       showToast(`Shifted to ${newQuadrant.toUpperCase()}`);
     }
 
@@ -2655,6 +2847,7 @@
       triggerTapHaptic();
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
 
       showToast('Task deleted', 4500, 'Undo', () => {
         if (lastDeletedTask) {
@@ -2668,8 +2861,18 @@
           });
           saveRoutines();
           renderRoutines();
+
+          const existingSIds = new Set(shoppingList.map(s => s.id));
+          importedShopping.forEach(s => {
+            if(!existingSIds.has(s.id)) shoppingList.push(s);
+          });
+          saveShoppingList();
+          renderShoppingList();
+    
+      renderShoppingList();
     
       renderRoutines();
+      renderShoppingList();
           lastDeletedTask = null;
           showToast('Task restored');
         }
@@ -2706,8 +2909,18 @@
           });
           saveRoutines();
           renderRoutines();
+
+          const existingSIds = new Set(shoppingList.map(s => s.id));
+          importedShopping.forEach(s => {
+            if(!existingSIds.has(s.id)) shoppingList.push(s);
+          });
+          saveShoppingList();
+          renderShoppingList();
+    
+      renderShoppingList();
     
       renderRoutines();
+      renderShoppingList();
         } else {
           titleElement.textContent = task.title;
         }
@@ -2763,7 +2976,8 @@
         quadrant: quadrantOverride || selectedQuadrant,
         timeCreated: Date.now(),
         dueDate: dueInput.value || '',
-        isCompleted: false
+        isCompleted: false,
+        workspace: activeWorkspace
       };
 
       tasks.unshift(newTask);
@@ -2777,6 +2991,7 @@
 
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
       showToast(`Added to ${newTask.quadrant.toUpperCase()}`);
     }
 
@@ -2822,6 +3037,7 @@
         exportedAt: new Date().toISOString(),
         tasks: tasks,
         routines: routines,
+        shopping: shoppingList,
         settings: settings
       };
 
@@ -2845,6 +3061,7 @@
           const parsed = JSON.parse(e.target.result);
           const importedTasks = Array.isArray(parsed) ? parsed : (parsed.tasks || []);
           const importedRoutines = parsed.routines || [];
+          const importedShopping = parsed.shopping || [];
 
           if (!Array.isArray(importedTasks) || importedTasks.length === 0) {
             showToast('⚠️ No valid tasks found in JSON file.');
@@ -2881,8 +3098,18 @@
           });
           saveRoutines();
           renderRoutines();
+
+          const existingSIds = new Set(shoppingList.map(s => s.id));
+          importedShopping.forEach(s => {
+            if(!existingSIds.has(s.id)) shoppingList.push(s);
+          });
+          saveShoppingList();
+          renderShoppingList();
+    
+      renderShoppingList();
     
       renderRoutines();
+      renderShoppingList();
           closeAllModals();
           showToast(`✅ Imported ${addedCount} tasks successfully.`);
         } catch (err) {
@@ -2903,6 +3130,7 @@
       saveTasks();
       renderMatrix();
       renderRoutines();
+      renderShoppingList();
       closeAllModals();
       showToast(`🧹 Cleared ${completedCount} completed tasks.`);
     }
@@ -2910,11 +3138,16 @@
     function seedSampleData() {
       tasks = [...SAMPLE_TASKS];
       routines = [...SAMPLE_ROUTINES];
+      shoppingList = [];
       saveTasks();
       saveRoutines();
+      saveShoppingList();
       renderMatrix();
+      renderShoppingList();
       renderRoutines();
+      renderShoppingList();
       renderRoutines();
+      renderShoppingList();
       closeAllModals();
       showToast('✨ Sample Eisenhower Matrix loaded.');
     }
@@ -2923,11 +3156,14 @@
       if (confirm('Are you sure you want to delete all tasks and reset FocusMatrix? This cannot be undone.')) {
         tasks = [];
         routines = [];
+        shoppingList = [];
         saveTasks();
         saveRoutines();
         renderMatrix();
         renderRoutines();
+      renderShoppingList();
       renderRoutines();
+      renderShoppingList();
         closeAllModals();
         showToast('Reset complete: all tasks removed.');
       }
@@ -2955,6 +3191,30 @@
         });
       });
       
+      
+      document.getElementById('btnAddShopping').addEventListener('click', handleAddShoppingItem);
+      document.getElementById('input-shopping').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') handleAddShoppingItem();
+      });
+      
+      // Workspace Switcher
+      document.querySelectorAll('.ws-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.ws-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeWorkspace = btn.dataset.ws;
+          document.body.setAttribute('data-workspace', activeWorkspace);
+          triggerTapHaptic();
+          
+          // Reset mobile tabs to default All view when switching workspace
+          document.querySelectorAll('.matrix-tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelector('.matrix-tab-btn[data-view="all"]').classList.add('active');
+          document.getElementById('appMain').className = 'app-main mode-combined';
+          
+          renderMatrix();
+        });
+      });
+    
       // Desktop View Controls
       document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', () => {
